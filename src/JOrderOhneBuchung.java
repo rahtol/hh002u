@@ -1,12 +1,7 @@
-
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-import java.util.*;
-import java.sql.*;  //import all the JDBC classes
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
@@ -58,14 +53,13 @@ public class JOrderOhneBuchung {
         return true;
     }
     
-    public void findMatchingBuchung (TreeMap EffektenBuchung)
+    public void findMatchingBuchung (TreeMap<Integer, JEffektenBuchung> EffektenBuchung)
     {
-        Collection c = EffektenBuchung.entrySet();
-        Iterator i = c.iterator();
-        JEffektenBuchung matchingEb;
-
+        Collection<Map.Entry<Integer, JEffektenBuchung>> c = EffektenBuchung.entrySet();
+        Iterator<Map.Entry<Integer, JEffektenBuchung>> i = c.iterator();
+        
         while (i.hasNext()) {
-            Map.Entry cur = (Map.Entry) i.next();
+            Map.Entry<Integer, JEffektenBuchung> cur = i.next();
             JEffektenBuchung ebCandidate = (JEffektenBuchung) cur.getValue();
             
             if (findMatchingBuchung(ebCandidate)) {

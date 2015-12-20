@@ -33,13 +33,13 @@ import java.sql.*;  //import all the JDBC classes
  */
 public class Main {
 
-    private static TreeMap OrderOhneBuchung;
-    private static TreeMap EffektenBuchung;
+    private static TreeMap<Integer, JOrderOhneBuchung> OrderOhneBuchung;
+    private static TreeMap<Integer, JEffektenBuchung> EffektenBuchung;
     
     private static void readOrderOhneBuchung (Statement stmt) throws SQLException
     {
         int count = 0;
-        OrderOhneBuchung = new TreeMap();
+        OrderOhneBuchung = new TreeMap<Integer, JOrderOhneBuchung>();
         ResultSet result = stmt.executeQuery ("SELECT * FROM BEC_OrderOhneBuchung");
         
         while(result.next()) {
@@ -62,7 +62,7 @@ public class Main {
     private static void readEffektenBuchung (Statement stmt) throws SQLException
     {
         int count = 0;
-        EffektenBuchung = new TreeMap();
+        EffektenBuchung = new TreeMap<Integer, JEffektenBuchung>();
         ResultSet result = stmt.executeQuery ("SELECT * FROM BEC_EffektenBuchung");
         
         while(result.next()) {
@@ -85,12 +85,12 @@ public class Main {
     
     private static void matchOrderWithBuchung ()
     {
-        Collection c = OrderOhneBuchung.entrySet();
-        Iterator i = c.iterator();
+        Collection<Map.Entry<Integer,JOrderOhneBuchung>> c = OrderOhneBuchung.entrySet();
+        Iterator<Map.Entry<Integer,JOrderOhneBuchung>> i = c.iterator();
 
         while (i.hasNext()) {
-            Map.Entry cur = (Map.Entry) i.next();
-            JOrderOhneBuchung oob = (JOrderOhneBuchung) cur.getValue();
+            Map.Entry<Integer,JOrderOhneBuchung> cur = i.next();
+            JOrderOhneBuchung oob = cur.getValue();
             oob.findMatchingBuchung(EffektenBuchung);
         }
     }
@@ -99,13 +99,13 @@ public class Main {
     {
         PrintWriter outf = new PrintWriter (new BufferedWriter (new FileWriter (fname)));
         
-        Collection c = OrderOhneBuchung.entrySet();
-        Iterator i = c.iterator();
+        Collection<Map.Entry<Integer,JOrderOhneBuchung>> c = OrderOhneBuchung.entrySet();
+        Iterator<Map.Entry<Integer,JOrderOhneBuchung>> i = c.iterator();
         int matchCount = 0;
 
         while (i.hasNext()) {
-            Map.Entry cur = (Map.Entry) i.next();
-            JOrderOhneBuchung oob = (JOrderOhneBuchung) cur.getValue();
+            Map.Entry<Integer,JOrderOhneBuchung> cur = i.next();
+            JOrderOhneBuchung oob = cur.getValue();
             
             if (oob.matched ()) {
                 matchCount++;
@@ -129,12 +129,12 @@ public class Main {
     {
         System.out.println("writeDepotOrder due to --write !!!");
         
-        Collection c = OrderOhneBuchung.entrySet();
-        Iterator i = c.iterator();
+        Collection<Map.Entry<Integer,JOrderOhneBuchung>> c = OrderOhneBuchung.entrySet();
+        Iterator<Map.Entry<Integer,JOrderOhneBuchung>> i = c.iterator();
 
         while (i.hasNext()) {
-            Map.Entry cur = (Map.Entry) i.next();
-            JOrderOhneBuchung oob = (JOrderOhneBuchung) cur.getValue();
+            Map.Entry<Integer,JOrderOhneBuchung> cur = i.next();
+            JOrderOhneBuchung oob = cur.getValue();
             
             if (oob.matched ()) {
                 stmt.execute("UPDATE DepotOrder SET DepotOrder.BuchungID=" + oob.eb.BuchungID + " WHERE DOID=" + oob.DOID + ";");
